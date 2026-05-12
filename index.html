@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Álbum Copa do Mundo 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- ============================================================
+       CONFIGURAÇÃO FIREBASE
+       1. Acesse https://console.firebase.google.com
+       2. Crie um projeto (ex: "album-copa-2026")
+       3. Vá em "Realtime Database" > "Criar banco de dados"
+          - Escolha modo de teste (regras abertas por 30 dias)
+       4. Clique na engrenagem > "Configurações do projeto"
+       5. Em "Seus apps", clique em "</>" para adicionar app Web
+       6. Copie os valores e substitua abaixo:
+  ============================================================ -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAX4k5y0ddyc8x-QFZgCnfOe9ObNoJUP-c",
+      authDomain: "album-copa-2026-35800.firebaseapp.com",
+      databaseURL: "https://album-copa-2026-35800-default-rtdb.firebaseio.com",
+      projectId: "album-copa-2026-35800",
+      storageBucket: "album-copa-2026-35800.firebasestorage.app",
+      messagingSenderId: "9832194449",
+      appId: "1:9832194449:web:360ba25495f37c15983a30"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const ownedRef = ref(db, "album/owned");
+
+    // Expõe funções pro app
+    window._fbReady = false;
+    window._fbOwned = {};
+    window._fbUpdate = (id, val) => {
+      update(ownedRef, { [id]: val });
+    };
+
+    onValue(ownedRef, (snapshot) => {
+      window._fbOwned = snapshot.val() || {};
+      window._fbReady = true;
+      window.dispatchEvent(new CustomEvent("fb-update"));
+    });
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #06080f;
+      --bg2: #0b1020;
+      --bg3: #111827;
+      --border: #1e2d42;
+      --gold: #c9a84c;
+      --gold2: #f0d080;
+      --green: #3dba6e;
+      --red: #e03a30;
+      --text: #ddd8cc;
+      --muted: #5a6a80;
+      --card-bg: #0d1625;
+      --card-owned: #0d2218;
+      --special-bg: #0f102a;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(160deg, #0f0a20 0%, #091530 60%, #071510 100%);
+      border-bottom: 2px solid var(--gold);
+      padding: 14px 18px 10px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .header-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .header-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      color: #fff;
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .header-pct {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .header-count { font-size: 11px; color: var(--muted); margin-top: 2px; text-align: right; }
+    .progress-bar {
+      margin-top: 10px;
+      height: 4px;
+      background: var(--bg3);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold2));
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    /* NAV */
+    .nav {
+      display: flex;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav-btn {
+      flex: none;
+      padding: 11px 18px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .nav-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .search-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      min-width: 100px;
+    }
+    .search-input {
+      width: 100%;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 12px;
+    }
+    .search-input::placeholder { color: var(--muted); }
+
+    /* CONTENT */
+    .content { padding: 0 0 80px; }
+
+    /* GROUP PILLS */
+    .group-pills {
+      display: flex;
+      gap: 5px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 10px 14px;
+    }
+    .group-pills::-webkit-scrollbar { display: none; }
+    .pill {
+      flex: none;
+      padding: 4px 13px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .pill.active { border-color: var(--gold); background: #1a2538; color: var(--gold); }
+    .pill.done { color: var(--green); }
+
+    /* TEAM SECTION */
+    .team-section { padding: 0 14px; }
+    .team-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 9px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .team-code {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-right: 8px;
+    }
+    .team-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .team-progress { font-size: 11px; color: var(--muted); }
+    .team-progress.done { color: var(--green); }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 6px;
+      margin-bottom: 22px;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 9px;
+      cursor: pointer;
+      text-align: left;
+      position: relative;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .card:active { transform: scale(0.97); }
+    .card.owned {
+      background: var(--card-owned);
+      border-color: var(--green);
+    }
+    .card.special { background: var(--special-bg); border-color: #2a2a5a; }
+    .card.special.owned { background: var(--card-owned); border-color: var(--green); }
+    .card-check {
+      position: absolute;
+      top: 5px;
+      right: 7px;
+      color: var(--green);
+      font-size: 13px;
+      display: none;
+    }
+    .card.owned .card-check { display: block; }
+    .card-code {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--gold);
+    }
+    .card-name {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    .card.owned .card-name { color: #7acc99; }
+    .card-sub { font-size: 9px; color: #4a5a70; }
+
+    /* SECTION TITLE */
+    .sec-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* TAGS */
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 16px; }
+    .tag {
+      background: #111827;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 3px 10px;
+      font-size: 10px;
+      cursor: pointer;
+      font-family: 'Barlow Condensed', sans-serif;
+      color: var(--text);
+      transition: background 0.15s;
+    }
+    .tag:active { background: #1e2d42; }
+    .tag-code { color: var(--gold); margin-right: 4px; }
+
+    /* STATUS BAR */
+    .status-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--muted);
+    }
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+    .status-dot.connected { background: var(--green); }
+
+    /* LOADING */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 16px;
+      color: var(--muted);
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* EMPTY */
+    .empty { text-align: center; padding: 48px 20px; color: var(--gold); font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; }
+
+    @media (max-width: 400px) {
+      .grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div class="loading">
+    <div class="spinner"></div>
+    <div>Conectando ao Firebase...</div>
+  </div>
+</div>
+
+<script>
+// ===================== DADOS DO ÁLBUM =====================
+
+const FWC_STICKERS = [
+  { id: "FWC-0", code: "FWC 0", name: "Apresentação do Álbum" },
+  { id: "FWC-1", code: "FWC 1", name: "Emblema Oficial" },
+  { id: "FWC-2", code: "FWC 2", name: "Troféu FIFA" },
+  { id: "FWC-3", code: "FWC 3", name: "Mascotes Oficiais" },
+  { id: "FWC-4", code: "FWC 4", name: "Slogan Oficial" },
+  { id: "FWC-5", code: "FWC 5", name: "Bola Oficial (Trionda)" },
+  { id: "FWC-6", code: "FWC 6", name: "Emblema Canadá (sede)" },
+  { id: "FWC-7", code: "FWC 7", name: "Emblema México (sede)" },
+  { id: "FWC-8", code: "FWC 8", name: "Emblema USA (sede)" },
+  { id: "FWC-9", code: "FWC 9", name: "História: Italy 1934" },
+  { id: "FWC-10", code: "FWC 10", name: "História: Brazil 1950" },
+  { id: "FWC-11", code: "FWC 11", name: "História: Switzerland 1954" },
+  { id: "FWC-12", code: "FWC 12", name: "História: Chile 1962" },
+  { id: "FWC-13", code: "FWC 13", name: "História: England 1966" },
+  { id: "FWC-14", code: "FWC 14", name: "História: Mexico 1986" },
+  { id: "FWC-15", code: "FWC 15", name: "História: USA 1994" },
+  { id: "FWC-16", code: "FWC 16", name: "História: Korea/Japan 2002" },
+  { id: "FWC-17", code: "FWC 17", name: "História: Germany 2006" },
+  { id: "FWC-18", code: "FWC 18", name: "História: Brazil 2014" },
+  { id: "FWC-19", code: "FWC 19", name: "História: Qatar 2022" },
+];
+
+const CC_STICKERS = [
+  { id: "CC-1", code: "CC 1", name: "Lamine Yamal" },
+  { id: "CC-2", code: "CC 2", name: "Joshua Kimmich" },
+  { id: "CC-3", code: "CC 3", name: "Harry Kane" },
+  { id: "CC-4", code: "CC 4", name: "Santiago Giménez" },
+  { id: "CC-5", code: "CC 5", name: "Joško Gvardiol" },
+  { id: "CC-6", code: "CC 6", name: "Federico Valverde" },
+  { id: "CC-7", code: "CC 7", name: "Jefferson Lerma" },
+  { id: "CC-8", code: "CC 8", name: "Enner Valencia" },
+  { id: "CC-9", code: "CC 9", name: "Gabriel Magalhães" },
+  { id: "CC-10", code: "CC 10", name: "Virgil van Dijk" },
+  { id: "CC-11", code: "CC 11", name: "Alphonso Davies" },
+  { id: "CC-12", code: "CC 12", name: "Emiliano Martínez" },
+  { id: "CC-13", code: "CC 13", name: "Raúl Jiménez" },
+  { id: "CC-14", code: "CC 14", name: "Lautaro Martínez" },
+];
+
+const TEAMS_DATA = [
+  { group: "Grupo A", code: "MEX", name: "México", players: ["Luis Malagón","Johan Vásquez","Jorge Sánchez","César Montes","Jesús Gallardo","Israel Reyes","Diego Lainez","Carlos Rodríguez","Edson Álvarez","Orbelín Pineda","Marcel Ruiz","Hirving Lozano","Santiago Giménez","Raúl Jiménez","Alexis Vega","Roberto Alvarado","César Huerta","Érick Sánchez"] },
+  { group: "Grupo A", code: "RSA", name: "África do Sul", players: ["Ronwen Williams","Sipho Chaine","Aubrey Modiba","Samukele Kabini","Mbekezeli Mbokazi","Khulumani Ndamane","Siyabonga Ngezana","Khuliso Mudau","Nkosinathi Sibisi","Teboho Mokoena","Thalente Mbatha","Bathuisi Aubaas","Yaya Sithole","Sipho Mbule","Lyle Foster","Ioraam Rayners","Mohau Nkota","Oswin Appolis"] },
+  { group: "Grupo A", code: "KOR", name: "Coreia do Sul", players: ["Hyeon-woo Jo","Seung-Gyu Kim","Min-jae Kim","Yu-min Cho","Young-woo Seol","Han-beom Lee","Tae-seok Lee","Myung-jae Lee","Jae-sung Lee","In-beom Hwang","Kang-in Lee","Seung-ho Paik","Jens Castrop","Dong-gyeong Lee","Gue-sung Cho","Heung-min Son","Hee-chan Hwang","Hyeon-Gyu Oh"] },
+  { group: "Grupo A", code: "CZE", name: "República Tcheca", players: ["Matěj Kovář","Jindřich Staněk","Ladislav Krejčí","Vladimír Coufal","Jaroslav Zelený","Tomáš Holeš","David Zima","Michal Sadílek","Lukáš Provod","Lukáš Červ","Tomáš Souček","Pavel Šulc","Matěj Vydra","Vasil Kušej","Tomáš Chorý","Václav Černý","Adam Hložek","Patrik Schick"] },
+  { group: "Grupo B", code: "CAN", name: "Canadá", players: ["Dayne St. Clair","Alphonso Davies","Alistair Johnston","Samuel Adekugbe","Richie Laryea","Derek Cornelius","Moïse Bombito","Kamal Miller","Stephen Eustáquio","Ismaël Koné","Jonathan Osorio","Jacob Shaffelburg","Mathieu Choinière","Niko Sigur","Tajon Buchanan","Liam Millar","Cyle Larin","Jonathan David"] },
+  { group: "Grupo B", code: "BIH", name: "Bósnia e Herz.", players: ["Nikola Vasilj","Amar Dedić","Sead Kolašinac","Tarik Muharemović","Nihad Mujakić","Nikola Katić","Amir Hadžiahmetović","Benjamin Tahirović","Armin Gigović","Ivan Šunjić","Ivan Bašić","Dženis Burnić","Esmir Bajraktarević","Amar Memić","Ermedin Demirović","Edin Džeko","Samed Baždar","Haris Tabaković"] },
+  { group: "Grupo B", code: "QAT", name: "Catar", players: ["Meshaal Barsham","Sultan Albrake","Lucas Mendes","Homam Ahmed","Boualem Khoukhi","Pedro Miguel","Tarek Salman","Mohamed Al-Mannai","Karim Boudiaf","Assim Madibo","Ahmed Fatehi","Mohammed Waad","Abdulaziz Hatem","Hassan Al-Haydos","Edmilson Junior","Akram Hassan Afif","Ahmed Al Ganehi","Almoez Ali"] },
+  { group: "Grupo B", code: "SUI", name: "Suíça", players: ["Gregor Kobel","Yvon Mvogo","Manuel Akanji","Ricardo Rodriguez","Nico Elvedi","Aurèle Amenda","Silvan Widmer","Granit Xhaka","Denis Zakaria","Remo Freuler","Fabian Rieder","Ardon Jashari","Johan Manzambi","Michel Aebischer","Breel Embolo","Ruben Vargas","Dan Ndoye","Zeki Amdouni"] },
+  { group: "Grupo C", code: "BRA", name: "Brasil", players: ["Alisson","Bento","Marquinhos","Éder Militão","Gabriel Magalhães","Danilo","Wesley","Lucas Paquetá","Casemiro","Bruno Guimarães","Luiz Henrique","Vinícius Júnior","Rodrygo","João Pedro","Matheus Cunha","Gabriel Martinelli","Raphinha","Estêvão"] },
+  { group: "Grupo C", code: "MAR", name: "Marrocos", players: ["Yassine Bounou","Munir El Kajoui","Achraf Hakimi","Noussair Mazraoui","Nayef Aguerd","Romain Saïss","Jawad El Yamiq","Adam Masina","Sofyan Amrabat","Azzedine Ounahi","Eliesse Ben Seghir","Bilal El Khannouss","Ismael Saibari","Youssef En-Nesyri","Abde Ezzalzouli","Soufiane Rahimi","Brahim Díaz","Ayoub El Kaabi"] },
+  { group: "Grupo C", code: "HAI", name: "Haiti", players: ["Johny Placide","Carlens Arcus","Martin Expérience","Jean-Kevin Duverne","Ricardo Adé","Duke Lacroix","Garven Metusala","Hannes Delcroix","Leverton Pierre","Danley Jean Jacques","Jean-Ricner Bellegarde","Christopher Attys","Derrick Etienne Jr.","Josué Casimir","Ruben Providence","Duckens Nazon","Louicius Deedson","Frantzdy Pierrot"] },
+  { group: "Grupo C", code: "SCO", name: "Escócia", players: ["Angus Gunn","Jack Hendry","Kieran Tierney","Aaron Hickey","Andrew Robertson","Scott McKenna","John Souttar","Anthony Ralston","Grant Hanley","Scott McTominay","Billy Gilmour","Lewis Ferguson","Ryan Christie","Kenny McLean","John McGinn","Lyndon Dykes","Che Adams","Ben Gannon-Doak"] },
+  { group: "Grupo D", code: "USA", name: "Estados Unidos", players: ["Matt Freese","Chris Richards","Tim Ream","Mark McKenzie","Alex Freeman","Antonee Robinson","Tyler Adams","Tanner Tessmann","Weston McKennie","Christian Roldan","Timothy Weah","Diego Luna","Malik Tillman","Christian Pulisic","Brenden Aaronson","Ricardo Pepi","Haji Wright","Folarin Balogun"] },
+  { group: "Grupo D", code: "PAR", name: "Paraguai", players: ["Roberto Fernández","Orlando Gill","Gustavo Gómez","Fabián Balbuena","Juan José Cáceres","Omar Alderete","Junior Alonso","Mathías Villasanti","Diego Gómez","Damián Bobadilla","Andrés Cubas","Matías Galarza","Julio Enciso","Ángel Romero","Hernán Pérez","Raúl Bobadilla","Braian Samudio","Jorge Morel"] },
+  { group: "Grupo D", code: "AUS", name: "Austrália", players: ["Mathew Ryan","Joe Gauci","Harry Souttar","Alessandro Circati","Jordan Bos","Aziz Behich","Cameron Burgess","Lewis Miller","Milos Degenek","Jackson Irvine","Riley McGree","Aiden O'Neill","Connor Metcalfe","Patrick Yazbek","Craig Goodwin","Kusini Yengi","Nestory Irankunda","Mohamed Touré"] },
+  { group: "Grupo D", code: "TUR", name: "Turquia", players: ["Ugurcan Cakir","Mert Muldur","Zeki Celik","Abdulkerim Bardakci","Caglar Soyuncu","Merih Demiral","Ferdi Kadioglu","Kaan Ayhan","Ismail Yuksek","Hakan Calhanoglu","Orkun Kokcu","Arda Güler","Irfan Can Kahvecu","Yunus Akgun","Can Uzun","Baris Alper Yilmaz","Kerem Akturkoglu","Kenan Yildiz"] },
+  { group: "Grupo E", code: "GER", name: "Alemanha", players: ["Marc-André ter Stegen","Jonathan Tah","David Raum","Nico Schlotterbeck","Antonio Rüdiger","Waldemar Anton","Ridle Baku","Maximilian Mittelstädt","Joshua Kimmich","Florian Wirtz","Felix Nmecha","Leon Goretzka","Jamal Musiala","Serge Gnabry","Kai Havertz","Leroy Sané","Karim Adeyemi","Nick Woltemade"] },
+  { group: "Grupo E", code: "CUW", name: "Curaçao", players: ["Eloy Room","Armando Obispo","Sherel Floranus","Jurien Gaari","Joshua Brenet","Roshon Van Eijma","Shurandy Sambo","Livano Comenencia","Godfried Roemeratoe","Juninho Bacuna","Leandro Bacuna","Tahith Chong","Kenji Gorré","Jearl Margaritha","Jurgen Locadia","Jeremy Antonisse","Gervane Kastaneer","Sontje Hansen"] },
+  { group: "Grupo E", code: "CIV", name: "Costa do Marfim", players: ["Yahia Fofana","Ghislain Konan","Wilfried Singo","Odilon Kossounou","Evan Ndicka","Willy Boly","Emmanuel Agbadou","Ousmane Diomande","Franck Kessié","Seko Fofana","Ibrahim Sangaré","Jean-Philippe Gbamin","Amad Diallo","Sébastien Haller","Simon Adingra","Yan Diomande","Evann Guessand","Oumar Diakité"] },
+  { group: "Grupo E", code: "ECU", name: "Equador", players: ["Hernán Galíndez","Gonzalo Valle","Piero Hincapié","Pervis Estupiñán","Willian Pacho","Ángelo Preciado","Joel Ordóñez","Moisés Caicedo","Alan Franco","Kendry Páez","Pedro Vite","John Yeboah","Leonardo Campana","Gonzalo Plata","Nilson Angulo","Alan Minda","Kevin Rodríguez","Enner Valencia"] },
+  { group: "Grupo F", code: "NED", name: "Holanda", players: ["Bart Verbruggen","Virgil van Dijk","Micky van de Ven","Jurriën Timber","Denzel Dumfries","Nathan Aké","Jeremie Frimpong","Jan Paul van Hecke","Tijjani Reijnders","Ryan Gravenberch","Teun Koopmeiners","Frenkie de Jong","Xavi Simons","Justin Kluivert","Memphis Depay","Donyell Malen","Wout Weghorst","Cody Gakpo"] },
+  { group: "Grupo F", code: "JPN", name: "Japão", players: ["Zion Suzuki","Henry Heroki Mochizuki","Ayumu Seko","Junnosuke Suzuki","Shogo Taniguchi","Tsuyoshi Watanabe","Kaishu Sano","Yuki Soma","Ao Tanaka","Daichi Kamada","Takefusa Kubo","Ritsu Doan","Keito Nakamura","Takumi Minamino","Shuto Machino","Junya Ito","Koki Ogawa","Ayase Ueda"] },
+  { group: "Grupo F", code: "SWE", name: "Suécia", players: ["Victor Johansson","Isak Hien","Gabriel Gudmundsson","Emil Holm","Victor Nilsson Lindelöf","Gustaf Lagerbielke","Lucas Bergvall","Hugo Larsson","Jesper Karlström","Yasin Ayari","Mattias Svanberg","Daniel Svensson","Ken Sema","Roony Bardghji","Dejan Kulusevski","Anthony Elanga","Alexander Isak","Viktor Gyökeres"] },
+  { group: "Grupo F", code: "TUN", name: "Tunísia", players: ["Bechir Ben Said","Aymen Dahmen","Van Valery","Montassar Talbi","Yassine Meriah","Ali Abdi","Dylan Bronn","Ellyes Skhiri","Aissa Laidouni","Ferjani Sassi","Mohamed Ali Ben Romdhane","Hannibal Mejbri","Elias Achouri","Elias Saad","Hazem Mastouri","Ismael Gharbi","Sayfallah Ltaief","Naim Sliti"] },
+  { group: "Grupo G", code: "BEL", name: "Bélgica", players: ["Thibaut Courtois","Arthur Theate","Timothy Castagne","Zeno Debast","Brandon Mechele","Maxim De Cuyper","Thomas Meunier","Youri Tielemans","Amadou Onana","Nicolas Raskin","Alexis Saelemaekers","Hans Vanaken","Kevin De Bruyne","Jérémy Doku","Charles De Ketelaere","Leandro Trossard","Loïs Openda","Romelu Lukaku"] },
+  { group: "Grupo G", code: "EGY", name: "Egito", players: ["Mohamed El Shenawy","Mohamed Hany","Mohamed Hamdy","Yasser Ibrahim","Khaled Sobhi","Ramy Rabia","Hossam Abdelmaguid","Ahmed Fatouh","Marwan Attia","Zizo","Hamdy Fathy","Mohamed Lasheen","Emam Ashour","Osama Faisal","Mohamed Salah","Mostafa Mohamed","Trezeguet","Omar Marmoush"] },
+  { group: "Grupo G", code: "IRN", name: "Irã", players: ["Alireza Beiranvand","Morteza Pouraliganji","Ehsan Hajsafi","Milad Mohammadi","Shoja Khalilzadeh","Ramin Rezaeian","Hossein Kanaani","Sadegh Moharrami","Saleh Hardani","Saeed Ezatolahi","Saman Ghoddos","Omid Noorafkan","Roozbeh Cheshmi","Mohammad Mohebi","Sardar Azmoun","Mehdi Taremi","Alireza Jahanbakhsh","Ali Gholizadeh"] },
+  { group: "Grupo G", code: "NZL", name: "Nova Zelândia", players: ["Max Crocombe-Payne","Alex Paulsen","Michael Boxall","Liberato Cacace","Tim Payne","Tyler Bindon","Francis de Vries","Finn Surman","Joe Bell","Sarpreet Singh","Ryan Thomas","Matthew Garbett","Marko Stamenić","Ben Old","Chris Wood","Elijah Just","Callum McCowatt","Kosta Barbarouses"] },
+  { group: "Grupo H", code: "ESP", name: "Espanha", players: ["Unai Simón","Robin Le Normand","Aymeric Laporte","Dean Huijsen","Pedro Porro","Dani Carvajal","Marc Cucurella","Martín Zubimendi","Rodri","Pedri","Fabián Ruiz","Mikel Merino","Lamine Yamal","Dani Olmo","Nico Williams","Ferran Torres","Álvaro Morata","Mikel Oyarzabal"] },
+  { group: "Grupo H", code: "CPV", name: "Cabo Verde", players: ["Vozinha","Logan Costa","Pico","Diney","Steven Moreira","Wagner Pina","João Paulo","Yannick Semedo","Kevin Pina","Patrick Andrade","Jamiro Monteiro","Deroy Duarte","Garry Rodrigues","Jovane Cabral","Ryan Mendes","Dailon Livramento","Willy Semedo","Bebé"] },
+  { group: "Grupo H", code: "KSA", name: "Arábia Saudita", players: ["Nawaf Alaqidi","Abdulrahman Al-Sanbi","Saud Abdulhamid","Nawaf Boushal","Jihad Thakri","Moteb Al-Harbi","Hassan Altambakti","Musab Aljuwayr","Ziyad Aljohani","Abdullah Alkhaibari","Nasser Aldawsari","Saleh Abu Alshamat","Marwan Alsahafi","Salem Aldawsari","Abdulrahman Al-Aboud","Feras Albrikan","Saleh Alshehri","Abdullah Al-Hamdan"] },
+  { group: "Grupo H", code: "URU", name: "Uruguai", players: ["Sergio Rochet","Santiago Mele","Ronald Araujo","José María Giménez","Sebastian Caceres","Mathias Olivera","Guillermo Varela","Nahitan Nandez","Federico Valverde","Giorgian De Arrascaeta","Rodrigo Bentancur","Manuel Ugarte","Nicolás de la Cruz","Maxi Araujo","Darwin Núñez","Federico Viñas","Rodrigo Aguirre","Facundo Pellistri"] },
+  { group: "Grupo I", code: "FRA", name: "França", players: ["Mike Maignan","Theo Hernández","William Saliba","Jules Koundé","Ibrahima Konaté","Dayot Upamecano","Lucas Digne","Aurélien Tchouaméni","Eduardo Camavinga","Manu Koné","Adrien Rabiot","Michael Olise","Ousmane Dembélé","Bradley Barcola","Désiré Doué","Kingsley Coman","Hugo Ekitike","Kylian Mbappé"] },
+  { group: "Grupo I", code: "SEN", name: "Senegal", players: ["Eduardo Mendy","Yehvann Diouf","Moussa Niakhaté","Abdoulaye Seck","Ismail Jakobs","El Hadji Malick Diouf","Kalidou Koulibaly","Idrissa Gana Gueye","Pape Matar Sarr","Pape Gueye","Habib Diarra","Lamine Camara","Sadio Mane","Ismaïla Sarr","Boulaye Dia","Iliman Ndiaye","Nicolas Jackson","Krepin Diatta"] },
+  { group: "Grupo I", code: "IRQ", name: "Iraque", players: ["Jalal Hassan","Rebin Sulaka","Hussein Ali","Akam Hashem","Merchas Doski","Zaid Tahseen","Manaf Younis","Zidane Iqbal","Amir Al-Ammari","Ibrahim Bayesh","Ali Jasim","Youssef Amyn","Aimar Sher","Marko Farji","Osama Rashid","Ali Al-Hamadi","Aymen Hussein","Mohanad Ali"] },
+  { group: "Grupo I", code: "NOR", name: "Noruega", players: ["Ørjan Nyland","Julian Ryerson","Leo Østigård","Kristoffer Ajer","Marcus Holmgren Pedersen","David Møller Wolfe","Torbjørn Heggem","Morten Thorsby","Martin Ødegaard","Sander Berge","Andreas Schjelderup","Patrick Berg","Erling Haaland","Alexander Sørloth","Aron Dønnum","Jørgen Strand Larsen","Antonio Nusa","Oscar Bobb"] },
+  { group: "Grupo J", code: "ARG", name: "Argentina", players: ["Emiliano Martínez","Nahuel Molina","Cristian Romero","Nicolás Otamendi","Nicolás Tagliafico","Leonardo Balerdi","Enzo Fernández","Alexis Mac Allister","Rodrigo De Paul","Exequiel Palacios","Leandro Paredes","Nico Paz","Franco Mastantuono","Nico González","Lionel Messi","Lautaro Martínez","Julián Álvarez","Giuliano Simeone"] },
+  { group: "Grupo J", code: "ALG", name: "Argélia", players: ["Raïs M'Bolhi","Alexandre Oukidja","Riyad Mahrez","Ismaël Bennacer","Andy Delort","Youcef Atal","Amar Benítez","Said Benrahma","Haris Belkebla","Islam Slimani","Djamel Benlamri","Mehdi Zerkane","Adam Ounas","Baghdad Bounedjah","Faouzi Ghoulam","Ilyes Chetti","Nabil Bentaleb","Yassine Benzia"] },
+  { group: "Grupo J", code: "AUT", name: "Áustria", players: ["Patrick Pentz","Heinz Lindner","Philipp Lienhart","David Alaba","Stefan Posch","Andreas Weimann","Konrad Laimer","Marcel Sabitzer","Florian Grillitsch","Marko Arnautovic","Michael Gregoritsch","Xaver Schlager","Christoph Baumgartner","Nicolas Seiwald","Valentino Lazoaro","Maximilian Entrup","Junior Adamu","Patrick Wimmer"] },
+  { group: "Grupo J", code: "JOR", name: "Jordânia", players: ["Yazeed Abo Laila","Ibrahim Shelbaieh","Baha'a Faisal","Anas Bani Yaseen","Khaled Shahrouri","Ehsan Haddad","Osama Rashid","Musa Al-Taamari","Ahmad Salam","Yazan Al-Naimat","Momen Mahfouth","Ahmad Hayel","Mohammad Al-Rashdan","Hamza Al-Dardour","Moussa Al-Taamari","Firas Al-Khatib","Abdullah Nasib","Ahmad Abu Eid"] },
+  { group: "Grupo K", code: "POR", name: "Portugal", players: ["Diogo Costa","José Sá","Rúben Dias","Pepe","Nuno Mendes","João Cancelo","Diogo Dalot","Vitinha","Rúben Neves","João Palhinha","Bruno Fernandes","Bernardo Silva","Cristiano Ronaldo","Rafael Leão","Pedro Neto","Gonçalo Ramos","Diogo Jota","Francisco Conceição"] },
+  { group: "Grupo K", code: "COD", name: "Congo DR", players: ["Joël Kiassumbua","Ley Matampi","Chancel Mbemba","Marcel Tisserand","Yoane Wissa","Hérita Ilunga","Cédric Bakambu","Neeskens Kebano","Arthur Masuaku","Théo Bongonda","Silas Mvumpa","Christian Luyindama","Emmanuel Lebo","Paul-José Mpoku","Jonathan Bolingi","Dieumerci Mbokani","Britt Assombalonga","Firmin Mubele"] },
+  { group: "Grupo K", code: "UZB", name: "Uzbequistão", players: ["Eldorbek Suyunov","Utkir Yusupov","Jasur Yakhshiboev","Odil Ahmedov","Oybek Bozorov","Jaloliddin Masharipov","Eldor Shomurodov","Abbosbek Fayzullaev","Islom Tukhtamurodov","Sherzod Nishonov","Otabek Shukurov","Khurshid Mukhitdinov","Dostonbek Khamdamov","Bobur Abdixoliqov","Ilhomjon Hamrobekov","Ruslan Nishonov","Akbar Ziyodullayev","Mirzohid Qodirov"] },
+  { group: "Grupo K", code: "COL", name: "Colômbia", players: ["Camilo Vargas","David Ospina","Santiago Arias","Dávinson Sánchez","Jhon Lucumí","William Tesillo","Stefan Medina","Wilmar Barrios","Mateus Uribe","Jefferson Lerma","Juan Cuadrado","Duván Zapata","Falcao García","James Rodríguez","Luis Díaz","Miguel Ángel Borja","Rafael Santos Borré","Jhon Córdoba"] },
+  { group: "Grupo L", code: "ENG", name: "Inglaterra", players: ["Jordan Pickford","Aaron Ramsdale","Kyle Walker","John Stones","Harry Maguire","Luke Shaw","Trent Alexander-Arnold","Declan Rice","Jude Bellingham","Phil Foden","Mason Mount","Conor Gallagher","Bukayo Saka","Raheem Sterling","Marcus Rashford","Harry Kane","Ollie Watkins","Ivan Toney"] },
+  { group: "Grupo L", code: "CRO", name: "Croácia", players: ["Dominik Livaković","Josip Šutalo","Joško Gvardiol","Duje Ćaleta-Car","Borna Sosa","Josip Juranović","Stanislav Lobotka","Luka Modrić","Mateo Kovačić","Mario Pašalić","Lovro Majer","Nikola Vlašić","Ivan Perišić","Ante Budimir","Andrej Kramarić","Bruno Petković","Marko Livaja","Luka Ivanušec"] },
+  { group: "Grupo L", code: "GHA", name: "Gana", players: ["Lawrence Ati Zigi","Joseph Wollacott","Jonathan Mensah","Daniel Amartey","Baba Rahman","Alexander Djiku","Tariq Lamptey","Thomas Partey","Iddrisu Baba","Mubarak Wakaso","Mohammed Kudus","Salis Abdul Samed","Antoine Semenyo","Jordan Ayew","Andre Ayew","Inaki Williams","Felix Afena-Gyan","Kamaldeen Sulemana"] },
+  { group: "Grupo L", code: "PAN", name: "Panamá", players: ["Luis Mejía","Orlando Mosquera","Fidel Escobar","Andrés Andrade","Édgar Bárcenas","Harold Cummings","Nicolás Guillo","César Yanis","Adalberto Carrasquilla","Anibal Godoy","Rolando Blackburn","Ismael Díaz","Cecilio Waterman","José Luis Rodríguez","Abdiel Ayarza","Gabriel Torres","Alfredo Stephens","Freddy Góndola"] },
+];
+
+function buildTeamStickers() {
+  const all = [];
+  TEAMS_DATA.forEach(team => {
+    all.push({ id: `${team.code}-1`, code: `${team.code} 1`, name: "Emblema", team: team.name, group: team.group, special: true });
+    team.players.slice(0, 11).forEach((p, i) => {
+      all.push({ id: `${team.code}-${i+2}`, code: `${team.code} ${i+2}`, name: p, team: team.name, group: team.group, special: false });
+    });
+    all.push({ id: `${team.code}-13`, code: `${team.code} 13`, name: "Foto do Elenco", team: team.name, group: team.group, special: true });
+    team.players.slice(11).forEach((p, i) => {
+      all.push({ id: `${team.code}-${i+14}`, code: `${team.code} ${i+14}`, name: p, team: team.name, group: team.group, special: false });
+    });
+  });
+  return all;
+}
+
+const ALL_TEAM_STICKERS = buildTeamStickers();
+const GROUPS = [...new Set(TEAMS_DATA.map(t => t.group))];
+const TOTAL_ALL = ALL_TEAM_STICKERS.length + FWC_STICKERS.length + CC_STICKERS.length;
+
+// ===================== STATE =====================
+let owned = {};
+let view = "album";
+let activeGroup = "Grupo A";
+let search = "";
+let connected = false;
+
+// ===================== RENDER =====================
+function $(sel) { return document.querySelector(sel); }
+
+function totalOwned() { return Object.values(owned).filter(Boolean).length; }
+
+function render() {
+  const to = totalOwned();
+  const pct = Math.round((to / TOTAL_ALL) * 100);
+
+  const missingTeam = ALL_TEAM_STICKERS.filter(s => !owned[s.id]);
+  const missingFWC = FWC_STICKERS.filter(s => !owned[s.id]);
+  const missingCC = CC_STICKERS.filter(s => !owned[s.id]);
+  const totalMissing = missingTeam.length + missingFWC.length + missingCC.length;
+
+  const searchResults = search.length >= 2 ? [
+    ...ALL_TEAM_STICKERS.filter(s => s.name.toLowerCase().includes(search.toLowerCase()) || s.code.toLowerCase().includes(search.toLowerCase()) || s.team.toLowerCase().includes(search.toLowerCase())),
+    ...FWC_STICKERS.filter(s => s.name.toLowerCase().includes(search.toLowerCase()) || s.code.toLowerCase().includes(search.toLowerCase())),
+    ...CC_STICKERS.filter(s => s.name.toLowerCase().includes(search.toLowerCase()) || s.code.toLowerCase().includes(search.toLowerCase())),
+  ] : [];
+
+  document.getElementById("app").innerHTML = `
+    <div class="header">
+      <div class="header-top">
+        <div>
+          <div class="header-label">Panini Official</div>
+          <div class="header-title">Copa do Mundo 2026</div>
+        </div>
+        <div>
+          <div class="header-pct">${pct}%</div>
+          <div class="header-count">${to} / ${TOTAL_ALL}</div>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-btn ${view==='album'?'active':''}" onclick="setView('album')">Álbum</button>
+      <button class="nav-btn ${view==='especiais'?'active':''}" onclick="setView('especiais')">Especiais</button>
+      <button class="nav-btn ${view==='faltando'?'active':''}" onclick="setView('faltando')">Faltando (${totalMissing})</button>
+      <div class="search-wrap">
+        <input class="search-input" id="searchInput" placeholder="Buscar código ou nome..." value="${search}" oninput="onSearch(this.value)" />
+      </div>
+    </div>
+
+    <div class="content">
+      ${search.length >= 2 ? renderGrid(searchResults, true) : view === 'especiais' ? renderEspeciais(missingFWC, missingCC) : view === 'faltando' ? renderFaltando(missingTeam, missingFWC, missingCC) : renderAlbum()}
+    </div>
+
+    <div class="status-bar">
+      <div class="status-dot ${connected?'connected':''}"></div>
+      ${connected ? 'Sincronizado com Firebase' : 'Aguardando conexão...'}
+    </div>
+  `;
+}
+
+function renderGrid(stickers, showSub) {
+  if (!stickers.length) return '<div class="empty">Nenhum resultado</div>';
+  return `<div style="padding:14px"><div class="grid">${stickers.map(s => renderCard(s, showSub)).join('')}</div></div>`;
+}
+
+function renderCard(s, showSub) {
+  const o = !!owned[s.id];
+  const sp = s.special;
+  return `<button class="card ${o?'owned':''} ${sp?'special':''}" onclick="toggle('${s.id}')">
+    <span class="card-check">✓</span>
+    <div class="card-code">${s.code}</div>
+    ${showSub && s.team ? `<div class="card-sub">${s.team}</div>` : ''}
+    <div class="card-name">${s.name}</div>
+  </button>`;
+}
+
+function renderTag(s) {
+  return `<button class="tag" onclick="toggle('${s.id}')"><span class="tag-code">${s.code}</span>${s.name}</button>`;
+}
+
+function renderEspeciais() {
+  return `<div style="padding:14px">
+    <div class="sec-title" style="color:#c9a84c">FWC — FIFA World Cup</div>
+    <div class="grid">${FWC_STICKERS.map(s => renderCard(s, false)).join('')}</div>
+    <div style="margin-top:20px" class="sec-title" style="color:#e03a30">CC — Coca-Cola</div>
+    <div style="margin-top:10px" class="sec-title" style="color:#e03a30">CC — Coca-Cola</div>
+    <div class="grid">${CC_STICKERS.map(s => renderCard(s, false)).join('')}</div>
+  </div>`;
+}
+
+function renderFaltando(missingTeam, missingFWC, missingCC) {
+  let html = '<div style="padding:14px">';
+  if (missingFWC.length) html += `<div class="sec-title" style="color:#c9a84c">Especiais FWC</div><div class="tags">${missingFWC.map(renderTag).join('')}</div>`;
+  if (missingCC.length) html += `<div class="sec-title" style="color:#e05030;margin-top:12px">Especiais Coca-Cola</div><div class="tags">${missingCC.map(renderTag).join('')}</div>`;
+  GROUPS.forEach(group => {
+    const rows = TEAMS_DATA.filter(t => t.group === group).map(team => ({
+      team: team.name,
+      stickers: ALL_TEAM_STICKERS.filter(s => s.team === team.name && !owned[s.id])
+    })).filter(r => r.stickers.length > 0);
+    if (!rows.length) return;
+    html += `<div style="margin-top:16px"><div class="sec-title" style="color:#c9a84c">${group}</div>`;
+    rows.forEach(({ team, stickers }) => {
+      html += `<div style="margin-bottom:10px"><div style="font-size:11px;color:#5a6a80;margin-bottom:5px;font-family:'Barlow Condensed',sans-serif">${team}</div><div class="tags">${stickers.map(renderTag).join('')}</div></div>`;
+    });
+    html += '</div>';
+  });
+  if (missingTeam.length === 0 && missingFWC.length === 0 && missingCC.length === 0) html += '<div class="empty">Álbum completo!</div>';
+  html += '</div>';
+  return html;
+}
+
+function renderAlbum() {
+  const pills = GROUPS.map(g => {
+    const gs = ALL_TEAM_STICKERS.filter(s => s.group === g);
+    const done = gs.every(s => owned[s.id]);
+    return `<button class="pill ${activeGroup===g?'active':''} ${done?'done':''}" onclick="setGroup('${g}')">${g.replace('Grupo ','')}${done?' ✓':''}</button>`;
+  }).join('');
+
+  const teams = TEAMS_DATA.filter(t => t.group === activeGroup).map(team => {
+    const stickers = ALL_TEAM_STICKERS.filter(s => s.team === team.name);
+    const to = stickers.filter(s => owned[s.id]).length;
+    const done = to === stickers.length;
+    return `<div class="team-header">
+      <div><span class="team-code">${team.code}</span><span class="team-name">${team.name}</span></div>
+      <div class="team-progress ${done?'done':''}">${to}/${stickers.length}${done?' ✓':''}</div>
+    </div>
+    <div class="grid">${stickers.map(s => renderCard(s, false)).join('')}</div>`;
+  }).join('');
+
+  return `<div class="group-pills">${pills}</div><div class="team-section">${teams}</div>`;
+}
+
+// ===================== ACTIONS =====================
+window.setView = (v) => { view = v; search = ""; render(); };
+window.setGroup = (g) => { activeGroup = g; render(); };
+window.onSearch = (v) => { search = v; render(); setTimeout(() => { const el = document.getElementById('searchInput'); if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);} }, 0); };
+window.toggle = (id) => {
+  const newVal = !owned[id];
+  owned[id] = newVal;
+  render();
+  if (window._fbUpdate) window._fbUpdate(id.replace(/\./g,'_'), newVal);
+};
+
+// ===================== FIREBASE SYNC =====================
+window.addEventListener("fb-update", () => {
+  // Normalize keys back (Firebase doesn't allow dots)
+  const raw = window._fbOwned || {};
+  owned = {};
+  Object.entries(raw).forEach(([k, v]) => { owned[k.replace(/_/g, '.')] = v; });
+  connected = true;
+  render();
+});
+
+// Render inicial enquanto Firebase não chegou
+render();
+
+// Checa se Firebase está configurado
+setTimeout(() => {
+  if (!window._fbReady) {
+    document.getElementById("app").innerHTML += `
+      <div style="position:fixed;bottom:60px;left:0;right:0;background:#1a0a0a;border-top:1px solid #e03a30;padding:12px 18px;font-size:12px;color:#e07070;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-align:center">
+        Firebase não configurado — edite o index.html e cole suas credenciais
+      </div>`;
+  }
+}, 3000);
+</script>
+</body>
+</html>
